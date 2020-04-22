@@ -55,9 +55,9 @@ else()
     project(${PROJECT_NAME} VERSION "${PROJECT_VERSION}" LANGUAGES C CXX)
 endif()
 
-if (NOT CMAKE_SIZEOF_VOID_P EQUAL 8)
-    message("FATAL_ERROR" "Intel(R) MKL-DNN supports 64 bit platforms only")
-endif()
+# if (NOT CMAKE_SIZEOF_VOID_P EQUAL 8)
+    # message("FATAL_ERROR" "Intel(R) MKL-DNN supports 64 bit platforms only")
+# endif()
 
 if("${CMAKE_BUILD_TYPE}" STREQUAL "")
     message(STATUS "CMAKE_BUILD_TYPE is unset, defaulting to Release")

@@ -191,14 +191,31 @@ void resize_bilinear_u8(const Blob::Ptr inBlob, Blob::Ptr outBlob, uint8_t* buff
         int x = 0;
         vertical_pass:
         for (; x <= swidth - cols_block_size; x += cols_block_size) {
-            __m128i val0lo = _mm_insert_epi64(_mm_loadl_epi64(reinterpret_cast<const __m128i *>(sptr_ + x + filtered_rows_id[0])),
-                                              *(reinterpret_cast<const int64_t *>(sptr_ + x + filtered_rows_id[1])), 1);
-            __m128i val0hi = _mm_insert_epi64(_mm_loadl_epi64(reinterpret_cast<const __m128i *>(sptr_ + x + filtered_rows_id[2])),
-                                              *(reinterpret_cast<const int64_t *>(sptr_ + x + filtered_rows_id[3])), 1);
-            __m128i val1lo = _mm_insert_epi64(_mm_loadl_epi64(reinterpret_cast<const __m128i *>(sptr_ + x + filtered_rows_id[0] + sstep)),
-                                              *(reinterpret_cast<const int64_t *>(sptr_ + x + filtered_rows_id[1] + sstep)), 1);
-            __m128i val1hi = _mm_insert_epi64(_mm_loadl_epi64(reinterpret_cast<const __m128i *>(sptr_ + x + filtered_rows_id[2] + sstep)),
-                                              *(reinterpret_cast<const int64_t *>(sptr_ + x + filtered_rows_id[3] + sstep)), 1);
+            //__m128i val0lo = _mm_insert_epi64(_mm_loadl_epi64(reinterpret_cast<const __m128i *>(sptr_ + x + filtered_rows_id[0])),
+            //                                  *(reinterpret_cast<const int64_t *>(sptr_ + x + filtered_rows_id[1])), 1);
+            //__m128i val0hi = _mm_insert_epi64(_mm_loadl_epi64(reinterpret_cast<const __m128i *>(sptr_ + x + filtered_rows_id[2])),
+            //                                  *(reinterpret_cast<const int64_t *>(sptr_ + x + filtered_rows_id[3])), 1);
+            //__m128i val1lo = _mm_insert_epi64(_mm_loadl_epi64(reinterpret_cast<const __m128i *>(sptr_ + x + filtered_rows_id[0] + sstep)),
+            //                                  *(reinterpret_cast<const int64_t *>(sptr_ + x + filtered_rows_id[1] + sstep)), 1);
+            //__m128i val1hi = _mm_insert_epi64(_mm_loadl_epi64(reinterpret_cast<const __m128i *>(sptr_ + x + filtered_rows_id[2] + sstep)),
+            //                                  *(reinterpret_cast<const int64_t *>(sptr_ + x + filtered_rows_id[3] + sstep)), 1);
+
+
+            __m128i val0lo = _mm_insert_epi32(_mm_loadl_epi64(reinterpret_cast<const __m128i *>(sptr_ + x + filtered_rows_id[0])),
+                                              *(reinterpret_cast<const int32_t *>(sptr_ + x + filtered_rows_id[1])), 2);
+            val0lo = _mm_insert_epi32(val0lo, *(reinterpret_cast<const int32_t *>(sptr_ + x + filtered_rows_id[1] + 32 )), 3);
+
+            __m128i val0hi = _mm_insert_epi32(_mm_loadl_epi64(reinterpret_cast<const __m128i *>(sptr_ + x + filtered_rows_id[2])),
+                                              *(reinterpret_cast<const int32_t *>(sptr_ + x + filtered_rows_id[3])), 2);
+            val0hi = _mm_insert_epi32(val0hi, *(reinterpret_cast<const int32_t *>(sptr_ + x + filtered_rows_id[3] + 32)), 3);
+
+            __m128i val1lo = _mm_insert_epi32(_mm_loadl_epi64(reinterpret_cast<const __m128i *>(sptr_ + x + filtered_rows_id[0] + sstep)),
+                                              *(reinterpret_cast<const int32_t *>(sptr_ + x + filtered_rows_id[1] + sstep)), 2);
+            val1lo = _mm_insert_epi32(val1lo, *(reinterpret_cast<const int32_t *>(sptr_ + x + filtered_rows_id[1] + sstep + 32)), 3);
+
+            __m128i val1hi = _mm_insert_epi32(_mm_loadl_epi64(reinterpret_cast<const __m128i *>(sptr_ + x + filtered_rows_id[2] + sstep)),
+                                              *(reinterpret_cast<const int32_t *>(sptr_ + x + filtered_rows_id[3] + sstep)), 2);
+            val1hi = _mm_insert_epi32(val1hi, *(reinterpret_cast<const int32_t *>(sptr_ + x + filtered_rows_id[3] + sstep + 32)), 3);
 
             __m128i val0_0 = _mm_unpacklo_epi8(val0lo, _mm_setzero_si128());
             __m128i val0_1 = _mm_unpackhi_epi8(val0lo, _mm_setzero_si128());
@@ -275,14 +292,34 @@ void resize_bilinear_u8(const Blob::Ptr inBlob, Blob::Ptr outBlob, uint8_t* buff
             __m128i a54 = _mm_loadu_si128(reinterpret_cast<const __m128i *>(alpha + (x + 4) * alpha_clones_num));
             __m128i a76 = _mm_loadu_si128(reinterpret_cast<const __m128i *>(alpha + (x + 6) * alpha_clones_num));
 
-            __m128i val_0 = _mm_insert_epi64(_mm_loadl_epi64(reinterpret_cast<const __m128i *>(tptr_ + pxofs1[x + 0] + 4)),
-                                             *(reinterpret_cast<const int64_t *>(tptr_ + pxofs1[x + 1] + 4)), 1);
-            __m128i val_1 = _mm_insert_epi64(_mm_loadl_epi64(reinterpret_cast<const __m128i *>(tptr_ + pxofs1[x + 2] + 4)),
-                                             *(reinterpret_cast<const int64_t *>(tptr_ + pxofs1[x + 3] + 4)), 1);
-            __m128i val_2 = _mm_insert_epi64(_mm_loadl_epi64(reinterpret_cast<const __m128i *>(tptr_ + pxofs1[x + 4] + 4)),
-                                             *(reinterpret_cast<const int64_t *>(tptr_ + pxofs1[x + 5] + 4)), 1);
-            __m128i val_3 = _mm_insert_epi64(_mm_loadl_epi64(reinterpret_cast<const __m128i *>(tptr_ + pxofs1[x + 6] + 4)),
-                                             *(reinterpret_cast<const int64_t *>(tptr_ + pxofs1[x + 7] + 4)), 1);
+            //__m128i val_0 = _mm_insert_epi64(_mm_loadl_epi64(reinterpret_cast<const __m128i *>(tptr_ + pxofs1[x + 0] + 4)),
+            //                                 *(reinterpret_cast<const int64_t *>(tptr_ + pxofs1[x + 1] + 4)), 1);
+            //__m128i val_1 = _mm_insert_epi64(_mm_loadl_epi64(reinterpret_cast<const __m128i *>(tptr_ + pxofs1[x + 2] + 4)),
+            //                                 *(reinterpret_cast<const int64_t *>(tptr_ + pxofs1[x + 3] + 4)), 1);
+            //__m128i val_2 = _mm_insert_epi64(_mm_loadl_epi64(reinterpret_cast<const __m128i *>(tptr_ + pxofs1[x + 4] + 4)),
+            //                                 *(reinterpret_cast<const int64_t *>(tptr_ + pxofs1[x + 5] + 4)), 1);
+            //__m128i val_3 = _mm_insert_epi64(_mm_loadl_epi64(reinterpret_cast<const __m128i *>(tptr_ + pxofs1[x + 6] + 4)),
+            //                                 *(reinterpret_cast<const int64_t *>(tptr_ + pxofs1[x + 7] + 4)), 1);
+
+            __m128i val_0 = _mm_insert_epi32(_mm_loadl_epi64(reinterpret_cast<const __m128i *>(tptr_ + pxofs1[x + 0] + 4)),
+                                             *(reinterpret_cast<const int32_t *>(tptr_ + pxofs1[x + 1] + 4)), 2);
+            val_0 = _mm_insert_epi32(val_0,
+                                             *(reinterpret_cast<const int32_t *>(tptr_ + pxofs1[x + 1] + 4 + 32)), 3);
+
+            __m128i val_1 = _mm_insert_epi32(_mm_loadl_epi64(reinterpret_cast<const __m128i *>(tptr_ + pxofs1[x + 2] + 4)),
+                                             *(reinterpret_cast<const int32_t *>(tptr_ + pxofs1[x + 3] + 4)), 2);
+
+            val_1 = _mm_insert_epi32(val_1,*(reinterpret_cast<const int32_t *>(tptr_ + pxofs1[x + 3] + 4 + 32 )), 3);
+
+            __m128i val_2 = _mm_insert_epi32(_mm_loadl_epi64(reinterpret_cast<const __m128i *>(tptr_ + pxofs1[x + 4] + 4)),
+                                             *(reinterpret_cast<const int32_t *>(tptr_ + pxofs1[x + 5] + 4)), 2);
+            val_2 = _mm_insert_epi32(val_2, *(reinterpret_cast<const int32_t *>(tptr_ + pxofs1[x + 5] + 4 + 32)), 3);
+
+
+            __m128i val_3 = _mm_insert_epi32(_mm_loadl_epi64(reinterpret_cast<const __m128i *>(tptr_ + pxofs1[x + 6] + 4)),
+                                             *(reinterpret_cast<const int32_t *>(tptr_ + pxofs1[x + 7] + 4)), 2);
+            val_3 = _mm_insert_epi32(val_3, *(reinterpret_cast<const int32_t *>(tptr_ + pxofs1[x + 7] + 4 + 32)), 3);
+
 
             val_0 = _mm_shuffle_epi32(val_0, _MM_SHUFFLE(3, 1, 2, 0));
             val_1 = _mm_shuffle_epi32(val_1, _MM_SHUFFLE(3, 1, 2, 0));

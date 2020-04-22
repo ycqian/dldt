@@ -5,6 +5,17 @@ project(InferenceEngine)
 
 set(CMAKE_MODULE_PATH "${IE_MAIN_SOURCE_DIR}/cmake" ${CMAKE_MODULE_PATH})
 
+set(ENABLE_SAMPLES FALSE)
+set(ENABLE_VPU FALSE)
+set(ENABLE_GNA FALSE)
+set(ENABLE_TESTS FALSE)
+set(ENABLE_PYTHON FALSE)
+
+set(ENABLE_C FALSE)
+
+set(ENABLE_MKL_DNN TRUE)
+set(ENABLE_CLDNN TURE)
+
 include(features_ie)
 
 # include developer package
@@ -17,6 +28,8 @@ include(check_features_ie)
 # resolving dependencies for the project
 include(dependencies)
 
+INCLUDE_DIRECTORIES("E:/yanqian/VINO/openVINO/inference-engine/temp/tbb/include")
+link_directories("E:/yanqian/VINO/openVINO/inference-engine/temp/tbb/lib")
 
 # Fuzz tests also building without ENABLE_FUZZING
 include(fuzzing)
@@ -119,36 +132,36 @@ endif()
 
 # install C samples
 
-ie_cpack_add_component(c_samples REQUIRED DEPENDS core)
+# ie_cpack_add_component(c_samples REQUIRED DEPENDS core)
 
-if(UNIX)
-    install(PROGRAMS samples/build_samples.sh
-            DESTINATION ${IE_CPACK_IE_DIR}/samples/c
-            COMPONENT c_samples)
-elseif(WIN32)
-    install(PROGRAMS samples/build_samples_msvc.bat
-            DESTINATION ${IE_CPACK_IE_DIR}/samples/c
-            COMPONENT c_samples)
-endif()
+# if(UNIX)
+    # install(PROGRAMS samples/build_samples.sh
+            # DESTINATION ${IE_CPACK_IE_DIR}/samples/c
+            # COMPONENT c_samples)
+# elseif(WIN32)
+    # install(PROGRAMS samples/build_samples_msvc.bat
+            # DESTINATION ${IE_CPACK_IE_DIR}/samples/c
+            # COMPONENT c_samples)
+# endif()
 
-install(DIRECTORY ie_bridges/c/samples/
-        DESTINATION ${IE_CPACK_IE_DIR}/samples/c
-        COMPONENT c_samples
-        PATTERN ie_bridges/c/samples/CMakeLists.txt EXCLUDE)
+# install(DIRECTORY ie_bridges/c/samples/
+        # DESTINATION ${IE_CPACK_IE_DIR}/samples/c
+        # COMPONENT c_samples
+        # PATTERN ie_bridges/c/samples/CMakeLists.txt EXCLUDE)
 
-install(FILES samples/CMakeLists.txt
-        DESTINATION ${IE_CPACK_IE_DIR}/samples/c
-        COMPONENT c_samples)
+# install(FILES samples/CMakeLists.txt
+        # DESTINATION ${IE_CPACK_IE_DIR}/samples/c
+        # COMPONENT c_samples)
 
 # install Python samples
 
-if(ENABLE_PYTHON)
-    ie_cpack_add_component(python_samples REQUIRED DEPENDS core)
+# if(ENABLE_PYTHON)
+    # ie_cpack_add_component(python_samples REQUIRED DEPENDS core)
 
-    install(DIRECTORY ${ie_python_api_SOURCE_DIR}/sample/
-            DESTINATION ${IE_CPACK_IE_DIR}/samples/python
-            COMPONENT python_samples)
-endif()
+    # install(DIRECTORY ${ie_python_api_SOURCE_DIR}/sample/
+            # DESTINATION ${IE_CPACK_IE_DIR}/samples/python
+            # COMPONENT python_samples)
+# endif()
 
 #
 # Developer package

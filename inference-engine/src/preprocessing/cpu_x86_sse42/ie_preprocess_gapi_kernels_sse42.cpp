@@ -96,14 +96,31 @@ void calcRowLinear_8U(uint8_t *dst[],
                     //         label: vertical_pass
                     //--------------------------------------------
 
-                    __m128i val0lo = _mm_insert_epi64(_mm_loadl_epi64(reinterpret_cast<const __m128i*>(&src0[0][w])),
-                                                                     *reinterpret_cast<const int64_t*>(&src0[1][w]), 1);
-                    __m128i val0hi = _mm_insert_epi64(_mm_loadl_epi64(reinterpret_cast<const __m128i*>(&src0[2][w])),
-                                                                     *reinterpret_cast<const int64_t*>(&src0[3][w]), 1);
-                    __m128i val1lo = _mm_insert_epi64(_mm_loadl_epi64(reinterpret_cast<const __m128i*>(&src1[0][w])),
-                                                                     *reinterpret_cast<const int64_t*>(&src1[1][w]), 1);
-                    __m128i val1hi = _mm_insert_epi64(_mm_loadl_epi64(reinterpret_cast<const __m128i*>(&src1[2][w])),
-                                                                     *reinterpret_cast<const int64_t*>(&src1[3][w]), 1);
+
+                    //__m128i val0lo = _mm_insert_epi64(_mm_loadl_epi64(reinterpret_cast<const __m128i*>(&src0[0][w])),
+                    //                                                 *reinterpret_cast<const int64_t*>(&src0[1][w]), 1);
+                    //__m128i val0hi = _mm_insert_epi64(_mm_loadl_epi64(reinterpret_cast<const __m128i*>(&src0[2][w])),
+                    //                                                 *reinterpret_cast<const int64_t*>(&src0[3][w]), 1);
+                    //__m128i val1lo = _mm_insert_epi64(_mm_loadl_epi64(reinterpret_cast<const __m128i*>(&src1[0][w])),
+                    //                                                 *reinterpret_cast<const int64_t*>(&src1[1][w]), 1);
+                    //__m128i val1hi = _mm_insert_epi64(_mm_loadl_epi64(reinterpret_cast<const __m128i*>(&src1[2][w])),
+                    //                                                 *reinterpret_cast<const int64_t*>(&src1[3][w]), 1);
+                    //need testing
+                    __m128i val0lo = _mm_insert_epi32(_mm_loadl_epi64(reinterpret_cast<const __m128i*>(&src0[0][w])),
+                        *reinterpret_cast<const int32_t*>(&src0[1][w]), 2);
+                    val0lo = _mm_insert_epi32(val0lo, *reinterpret_cast<const int32_t*>(&src0[1][w+32]), 3);
+
+                    __m128i val0hi = _mm_insert_epi32(_mm_loadl_epi64(reinterpret_cast<const __m128i*>(&src0[2][w])),
+                        *reinterpret_cast<const int32_t*>(&src0[3][w]), 2);
+                    val0hi = _mm_insert_epi32(val0hi, *reinterpret_cast<const int32_t*>(&src0[3][w + 32]), 3);
+
+                    __m128i val1lo = _mm_insert_epi32(_mm_loadl_epi64(reinterpret_cast<const __m128i*>(&src1[0][w])),
+                        *reinterpret_cast<const int32_t*>(&src1[1][w]), 2);
+                    val1lo = _mm_insert_epi32(val1lo, *reinterpret_cast<const int32_t*>(&src1[1][w + 32]), 3);
+
+                    __m128i val1hi = _mm_insert_epi32(_mm_loadl_epi64(reinterpret_cast<const __m128i*>(&src1[2][w])),
+                        *reinterpret_cast<const int32_t*>(&src1[3][w]), 2);
+                    val1hi = _mm_insert_epi32(val1hi, *reinterpret_cast<const int32_t*>(&src1[3][w + 32]), 3);
 
                     __m128i val0_0 = _mm_cvtepu8_epi16(val0lo);
                     __m128i val0_2 = _mm_cvtepu8_epi16(val0hi);
@@ -389,14 +406,34 @@ void calcRowLinear_8U(uint8_t *dst[],
             for (int x = 0; x < outSz.width; ) {
                 for (; x <= outSz.width - 8; x += 8) {
                     v_uint8x16 t0, t1, t2, t3;
-                    t0.val = _mm_insert_epi64(_mm_loadl_epi64(reinterpret_cast<__m128i*>(&tmp[4 * mapsx[x + 0]])),
-                                                             *reinterpret_cast<int64_t*>(&tmp[4 * mapsx[x + 1]]), 1);
-                    t1.val = _mm_insert_epi64(_mm_loadl_epi64(reinterpret_cast<__m128i*>(&tmp[4 * mapsx[x + 2]])),
-                                                             *reinterpret_cast<int64_t*>(&tmp[4 * mapsx[x + 3]]), 1);
-                    t2.val = _mm_insert_epi64(_mm_loadl_epi64(reinterpret_cast<__m128i*>(&tmp[4 * mapsx[x + 4]])),
-                                                             *reinterpret_cast<int64_t*>(&tmp[4 * mapsx[x + 5]]), 1);
-                    t3.val = _mm_insert_epi64(_mm_loadl_epi64(reinterpret_cast<__m128i*>(&tmp[4 * mapsx[x + 6]])),
-                                                             *reinterpret_cast<int64_t*>(&tmp[4 * mapsx[x + 7]]), 1);
+                    //t0.val = _mm_insert_epi64(_mm_loadl_epi64(reinterpret_cast<__m128i*>(&tmp[4 * mapsx[x + 0]])),
+                    //                                         *reinterpret_cast<int64_t*>(&tmp[4 * mapsx[x + 1]]), 1);
+                    //t1.val = _mm_insert_epi64(_mm_loadl_epi64(reinterpret_cast<__m128i*>(&tmp[4 * mapsx[x + 2]])),
+                    //                                         *reinterpret_cast<int64_t*>(&tmp[4 * mapsx[x + 3]]), 1);
+                    //t2.val = _mm_insert_epi64(_mm_loadl_epi64(reinterpret_cast<__m128i*>(&tmp[4 * mapsx[x + 4]])),
+                    //                                         *reinterpret_cast<int64_t*>(&tmp[4 * mapsx[x + 5]]), 1);
+                    //t3.val = _mm_insert_epi64(_mm_loadl_epi64(reinterpret_cast<__m128i*>(&tmp[4 * mapsx[x + 6]])),
+                    //                                         *reinterpret_cast<int64_t*>(&tmp[4 * mapsx[x + 7]]), 1);
+
+
+                    //need testing
+                    t0.val = _mm_insert_epi32(_mm_loadl_epi64(reinterpret_cast<__m128i*>(&tmp[4 * mapsx[x + 0]])),
+                        *reinterpret_cast<int32_t*>(&tmp[4 * mapsx[x + 1]]), 2);
+                    t0.val = _mm_insert_epi32(t0.val, *reinterpret_cast<int32_t*>(&tmp[4 * mapsx[x + 1]] + 32), 3);
+
+
+                    t1.val = _mm_insert_epi32(_mm_loadl_epi64(reinterpret_cast<__m128i*>(&tmp[4 * mapsx[x + 2]])),
+                        *reinterpret_cast<int32_t*>(&tmp[4 * mapsx[x + 3]]), 2);
+                    t1.val = _mm_insert_epi32(t1.val, *reinterpret_cast<int32_t*>(&tmp[4 * mapsx[x + 3]] + 32), 3);
+
+                    t2.val = _mm_insert_epi32(_mm_loadl_epi64(reinterpret_cast<__m128i*>(&tmp[4 * mapsx[x + 4]])),
+                        *reinterpret_cast<int32_t*>(&tmp[4 * mapsx[x + 5]]), 2);
+                    t2.val = _mm_insert_epi32(t2.val, *reinterpret_cast<int32_t*>(&tmp[4 * mapsx[x + 5]] + 32), 3);
+
+                    t3.val = _mm_insert_epi32(_mm_loadl_epi64(reinterpret_cast<__m128i*>(&tmp[4 * mapsx[x + 6]])),
+                        *reinterpret_cast<int32_t*>(&tmp[4 * mapsx[x + 7]]), 2);
+                    t3.val = _mm_insert_epi32(t3.val, *reinterpret_cast<int32_t*>(&tmp[4 * mapsx[x + 7]] + 32), 3);
+
 
                     v_uint8x16 r0, r1, r2, r3;
                     v_deinterleave(t0, t1, t2, t3, r0, r1, r2, r3);
@@ -515,14 +552,32 @@ void calcRowLinear_8UC_Impl(std::array<std::array<uint8_t*, 4>, chanNum> &dst,
                 //         label: vertical_pass
                 //--------------------------------------------
 
-                __m128i val0lo = _mm_insert_epi64(_mm_loadl_epi64(reinterpret_cast<const __m128i*>(&src0[0][w])),
-                        *reinterpret_cast<const int64_t*>(&src0[1][w]), 1);
-                __m128i val0hi = _mm_insert_epi64(_mm_loadl_epi64(reinterpret_cast<const __m128i*>(&src0[2][w])),
-                        *reinterpret_cast<const int64_t*>(&src0[3][w]), 1);
-                __m128i val1lo = _mm_insert_epi64(_mm_loadl_epi64(reinterpret_cast<const __m128i*>(&src1[0][w])),
-                        *reinterpret_cast<const int64_t*>(&src1[1][w]), 1);
-                __m128i val1hi = _mm_insert_epi64(_mm_loadl_epi64(reinterpret_cast<const __m128i*>(&src1[2][w])),
-                        *reinterpret_cast<const int64_t*>(&src1[3][w]), 1);
+
+                //__m128i val0lo = _mm_insert_epi64(_mm_loadl_epi64(reinterpret_cast<const __m128i*>(&src0[0][w])),
+                //        *reinterpret_cast<const int64_t*>(&src0[1][w]), 1);
+                //__m128i val0hi = _mm_insert_epi64(_mm_loadl_epi64(reinterpret_cast<const __m128i*>(&src0[2][w])),
+                //        *reinterpret_cast<const int64_t*>(&src0[3][w]), 1);
+                //__m128i val1lo = _mm_insert_epi64(_mm_loadl_epi64(reinterpret_cast<const __m128i*>(&src1[0][w])),
+                //        *reinterpret_cast<const int64_t*>(&src1[1][w]), 1);
+                //__m128i val1hi = _mm_insert_epi64(_mm_loadl_epi64(reinterpret_cast<const __m128i*>(&src1[2][w])),
+                //        *reinterpret_cast<const int64_t*>(&src1[3][w]), 1);
+
+                //need testing
+                __m128i val0lo = _mm_insert_epi32(_mm_loadl_epi64(reinterpret_cast<const __m128i*>(&src0[0][w])),
+                    *reinterpret_cast<const int32_t*>(&src0[1][w]), 2);
+                val0lo = _mm_insert_epi32(val0lo, *reinterpret_cast<const int32_t*>(&src0[1][w + 32]), 3);
+
+                __m128i val0hi = _mm_insert_epi32(_mm_loadl_epi64(reinterpret_cast<const __m128i*>(&src0[2][w])),
+                    *reinterpret_cast<const int32_t*>(&src0[3][w]), 2);
+                val0hi = _mm_insert_epi32(val0hi, *reinterpret_cast<const int32_t*>(&src0[3][w + 32]), 3);
+
+                __m128i val1lo = _mm_insert_epi32(_mm_loadl_epi64(reinterpret_cast<const __m128i*>(&src1[0][w])),
+                    *reinterpret_cast<const int32_t*>(&src1[1][w]), 2);
+                val1lo = _mm_insert_epi32(val1lo, *reinterpret_cast<const int32_t*>(&src1[1][w + 32]), 3);
+
+                __m128i val1hi = _mm_insert_epi32(_mm_loadl_epi64(reinterpret_cast<const __m128i*>(&src1[2][w])),
+                    *reinterpret_cast<const int32_t*>(&src1[3][w]), 2);
+                val1hi = _mm_insert_epi32(val1hi, *reinterpret_cast<const int32_t*>(&src1[3][w + 32]), 3);
 
                 __m128i val0_0 = _mm_cvtepu8_epi16(val0lo);
                 __m128i val0_2 = _mm_cvtepu8_epi16(val0hi);

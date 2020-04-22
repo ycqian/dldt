@@ -353,7 +353,7 @@ void MKLDNNQuantizeNode::createPrimitive() {
 
     size_t axisSize = getParentEdgeAt(0)->getDims()[getAxis()];
     size_t axisPaddedSize = rnd_up(axisSize, 16);
-    MKLDNNMemoryDesc weightsDataDesc = {{(uint32_t)axisPaddedSize}, memory::f32, memory::x};
+    MKLDNNMemoryDesc weightsDataDesc = {{(int)axisPaddedSize}, memory::f32, memory::x};
 
     if (isBinarization()) {
         auto prim_desc = createPrimitiveDescriptor<quantization_forward::primitive_desc, quantization_forward::desc>();
